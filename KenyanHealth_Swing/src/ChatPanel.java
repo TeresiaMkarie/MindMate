@@ -3,6 +3,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class ChatPanel extends JPanel {
 
@@ -15,19 +18,27 @@ public class ChatPanel extends JPanel {
     private JTextField inputField;
     private StyledDocument doc;
 
+    // --- KNOWLEDGE BASE ---
+    private Map<String, String[]> knowledgeBase;
+    private Random random;
+
     public ChatPanel() {
         setLayout(new BorderLayout());
         setBackground(COL_BG);
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // 1. HEADER (Renamed)
-        JLabel title = new JLabel("MindMate AI: Your Wellness Companion");
+        // Initialize the Brain
+        random = new Random();
+        initKnowledgeBase();
+
+        // 1. HEADER
+        JLabel title = new JLabel("MindMate AI: Comprehensive Support");
         title.setFont(new Font("Segoe UI", Font.BOLD, 24));
         title.setForeground(COL_HEADER);
         title.setBorder(new EmptyBorder(0, 0, 15, 0));
         add(title, BorderLayout.NORTH);
 
-        // 2. CHAT DISPLAY AREA
+        // 2. CHAT AREA
         chatArea = new JTextPane();
         chatArea.setEditable(false);
         chatArea.setBackground(Color.WHITE);
@@ -67,7 +78,8 @@ public class ChatPanel extends JPanel {
         inputPanel.add(sendBtn, BorderLayout.EAST);
         add(inputPanel, BorderLayout.SOUTH);
 
-        appendMessage("MindMate", "Hello. I am MindMate. I'm here to listen without judgment. What's on your mind?",
+        appendMessage("MindMate",
+                "Hello. I am MindMate. I am trained to listen to almost anything—from stress and relationships to grief and burnout. What's on your mind?",
                 false);
     }
 
@@ -79,6 +91,7 @@ public class ChatPanel extends JPanel {
         appendMessage("You", userText, true);
         inputField.setText("");
 
+        // Simulate thinking delay
         Timer timer = new Timer(600, e -> {
             String reply = getBotResponse(userText.toLowerCase());
             appendMessage("MindMate", reply, false);
@@ -87,71 +100,135 @@ public class ChatPanel extends JPanel {
         timer.start();
     }
 
-    // --- EXPANDED BRAIN OF THE BOT ---
+    // =================================================================
+    // THE BRAIN: EXPANDED KNOWLEDGE BASE
+    // =================================================================
+
+    private void initKnowledgeBase() {
+        knowledgeBase = new HashMap<>();
+
+        // --- 1. CRISIS & SAFETY (Top Priority) ---
+        String[] crisisResponses = {
+                "⚠️ I hear deep pain in your words. Please, your life matters. Call 1199 (Kenya Red Cross) or go to the nearest hospital.",
+                "⚠️ You are not alone, even if it feels that way. Please reach out to Befrienders Kenya: +254 722 118 060.",
+                "⚠️ Please stay with us. There is help available. Call a crisis line immediately: 988 or 1199."
+        };
+        addTopic(new String[] { "suicide", "kill myself", "die", "end it", "hurt myself", "no way out" },
+                crisisResponses);
+
+        // --- 2. ACADEMIC & SCHOOL STRESS ---
+        String[] schoolResponses = {
+                "Exams do not define your worth. Take it one topic at a time. Have you taken a break today?",
+                "Academic pressure is real. Remember: 'Done is better than perfect.' What is the smallest task you can finish right now?",
+                "It sounds like you're overwhelmed by school. Try the Pomodoro technique: Study 25 mins, rest 5 mins."
+        };
+        addTopic(new String[] { "exam", "school", "grades", "fail", "study", "homework", "class", "teacher",
+                "university", "college" }, schoolResponses);
+
+        // --- 3. WORKPLACE & CAREER ---
+        String[] workResponses = {
+                "Burnout is your body saying 'Enough'. Can you set a boundary today, like leaving work on time?",
+                "Work stress follows us home if we let it. Try a 'transition ritual'—change your clothes or take a walk to signal the work day is done.",
+                "Your job is what you do, not who you are. Don't let a bad day at work define your value."
+        };
+        addTopic(new String[] { "work", "job", "boss", "career", "fired", "hired", "interview", "office", "colleague",
+                "burnout" }, workResponses);
+
+        // --- 4. RELATIONSHIPS & LOVE ---
+        String[] relationshipResponses = {
+                "Relationships are complex. Communication is key. Have you told them exactly how their actions made you feel?",
+                "You deserve to feel safe and respected in any relationship. Does this person make you feel drained or energized?",
+                "Heartbreak is a physical pain. Be gentle with yourself. It's okay to grieve the future you thought you had."
+        };
+        addTopic(new String[] { "boyfriend", "girlfriend", "partner", "spouse", "husband", "wife", "breakup", "ex",
+                "date", "love", "dumped" }, relationshipResponses);
+
+        // --- 5. FAMILY & HOME ---
+        String[] familyResponses = {
+                "Family dynamics can be incredibly triggering. It is okay to set boundaries with family members to protect your peace.",
+                "You cannot control how your family acts, only how you react. Take a deep breath before responding.",
+                "Living in a tense home environment is exhausting. do you have a safe space (like a park or library) you can escape to?"
+        };
+        addTopic(new String[] { "mom", "dad", "mother", "father", "parent", "sister", "brother", "family", "home",
+                "house" }, familyResponses);
+
+        // --- 6. ANXIETY & PANIC ---
+        String[] anxietyResponses = {
+                "I know it feels scary, but this feeling will pass. Try 4-7-8 breathing: Inhale for 4, hold for 7, exhale for 8.",
+                "Anxiety is a liar—it tells you the worst-case scenario is a fact. It's not. Look around you. What is real right now?",
+                "Ground yourself: Find 5 blue things in the room. Name them out loud."
+        };
+        addTopic(new String[] { "anxious", "panic", "scared", "fear", "nervous", "shaking", "heart", "breath", "worry",
+                "future" }, anxietyResponses);
+
+        // --- 7. DEPRESSION & SADNESS ---
+        String[] depressionResponses = {
+                "Depression lies to you. It tells you that you are lazy or broken. You are neither. You are fighting a hard battle.",
+                "On days when you can't run, walk. When you can't walk, crawl. Just don't stop.",
+                "It is okay to not be okay. You don't have to 'fix' this feeling right this second. Just survive the day."
+        };
+        addTopic(new String[] { "sad", "depress", "cry", "tears", "hopeless", "empty", "numb", "dark", "bed", "tired" },
+                depressionResponses);
+
+        // --- 8. SLEEP & INSOMNIA ---
+        String[] sleepResponses = {
+                "A racing mind is the enemy of sleep. Try writing down your 'to-do' list for tomorrow so your brain can let go.",
+                "Screen blue light stops melatonin. Can you try reading a physical book for 20 minutes?",
+                "Rest is productive. You cannot pour from an empty cup."
+        };
+        addTopic(new String[] { "sleep", "awake", "insomnia", "nightmare", "dream", "tired", "exhausted", "energy" },
+                sleepResponses);
+
+        // --- 9. ANGER & FRUSTRATION ---
+        String[] angerResponses = {
+                "Anger is a secondary emotion—usually protecting us from hurt or fear. What is underneath the anger?",
+                "It's okay to be angry, but it's not okay to be destructive. Try squeezing a pillow or going for a run.",
+                "Take a step back. Respond, don't react."
+        };
+        addTopic(new String[] { "angry", "mad", "hate", "furious", "rage", "scream", "annoy", "frustrate" },
+                angerResponses);
+
+        // --- 10. SELF-IMAGE ---
+        String[] selfResponses = {
+                "You are your own harshest critic. Talk to yourself like you would talk to a friend.",
+                "Your worth is not tied to your productivity, your looks, or your grades.",
+                "Comparison is the thief of joy. Focus on your own journey."
+        };
+        addTopic(new String[] { "fat", "ugly", "stupid", "worthless", "failure", "body", "look", "weight" },
+                selfResponses);
+    }
+
+    // Helper to map many keywords to one response list
+    private void addTopic(String[] keywords, String[] responses) {
+        for (String key : keywords) {
+            knowledgeBase.put(key, responses);
+        }
+    }
+
     private String getBotResponse(String msg) {
-
-        // 1. CRISIS (Highest Priority)
-        if (containsAny(msg,
-                new String[] { "suicide", "kill myself", "die", "end it all", "hurt myself", "pain is too much" })) {
-            return "⚠️ I hear that you are in deep pain, but you are not alone. Please reach out for help immediately:\n"
-                    +
-                    "• Kenya Red Cross: 1199\n" +
-                    "• Befrienders Kenya: +254 722 118 060\n" +
-                    "Your life has value. Please call them now.";
+        // 1. Check for specific keywords in our massive map
+        for (String key : knowledgeBase.keySet()) {
+            // We use spaces to ensure we match whole words (e.g., avoid matching "ass" in
+            // "class")
+            if (msg.contains(key)) {
+                String[] replies = knowledgeBase.get(key);
+                return replies[random.nextInt(replies.length)];
+            }
         }
 
-        // 2. GREETINGS
-        if (msg.matches(".*\\b(hi|hello|hey|greetings)\\b.*"))
-            return "Hello! I'm here. How are you feeling right now?";
-        if (msg.contains("bye"))
-            return "Goodbye. Remember, self-care is a journey. I'm here whenever you need me.";
-        if (msg.contains("thank"))
-            return "You are very welcome. I'm glad I could help.";
-        if (msg.contains("name") || msg.contains("who are you"))
-            return "I am MindMate, your virtual mental health companion.";
-
-        // 3. STRESS & ANXIETY
-        if (containsAny(msg, new String[] { "stress", "pressure", "overwhelm", "too much", "busy" }))
-            return "Stress is heavy. Try the '5-4-3-2-1' technique: Name 5 things you see, 4 you feel, 3 you hear, 2 you smell, and 1 you taste. It grounds you.";
-        if (containsAny(msg, new String[] { "anxious", "panic", "scared", "fear", "nervous", "heart beating" }))
-            return "Anxiety passes, even if it feels permanent. Take a slow breath... hold it... and release. Focus only on your breathing for a moment.";
-        if (containsAny(msg, new String[] { "burnout", "exhausted", "tired", "drained", "can't focus" }))
-            return "You sound burnt out. Remember: Rest is not a reward; it's a necessity. Can you take 10 minutes just to do nothing?";
-
-        // 4. RELATIONSHIPS
-        if (containsAny(msg, new String[] { "lonely", "alone", "no friends", "isolation" }))
-            return "Loneliness is a universal human feeling, but it doesn't mean you are unlovable. Is there one small connection you can make today, even just a text?";
-        if (containsAny(msg, new String[] { "breakup", "heartbreak", "dumped", "ex", "divorce" }))
-            return "Heartbreak is physical pain. Be gentle with yourself. It's okay to grieve the relationship. Take it one hour at a time.";
-        if (containsAny(msg, new String[] { "fight", "argue", "parents", "conflict", "shouting" }))
-            return "Conflict is draining. If things are heated, it's okay to step away and say 'I need a moment to cool down' before continuing.";
-
-        // 5. SELF-ESTEEM & MOOD
-        if (containsAny(msg, new String[] { "ugly", "fat", "hate myself", "worthless", "stupid", "failure" }))
-            return "I'm sorry you feel that way, but thoughts are not facts. You are worthy simply because you exist. What is one small thing you like about yourself?";
-        if (containsAny(msg, new String[] { "sad", "cry", "tears", "down", "depressed", "blue" }))
-            return "It's okay to let the tears flow. Sadness is an emotion that demands to be felt. I am sitting with you in this.";
-        if (containsAny(msg, new String[] { "happy", "joy", "excited", "good news", "proud" }))
-            return "That is wonderful! Holding onto these moments builds resilience. I'm proud of you too!";
-
-        // 6. LIFE & PURPOSE
-        if (containsAny(msg, new String[] { "purpose", "meaning", "lost", "don't know what to do" }))
-            return "Feeling lost is often a sign of growth. You don't need to figure out your whole life today. Just figure out the next right step.";
-        if (containsAny(msg, new String[] { "sleep", "insomnia", "awake" }))
-            return "Sleep is the foundation of mental health. Try to dim the lights and avoid screens for 30 minutes. Your mind needs a signal to rest.";
-
-        // DEFAULT
-        return "I'm listening. Tell me more about that. How does it affect your day-to-day life?";
+        // 2. Default "I'm listening" responses if no keyword matched
+        String[] defaults = {
+                "I'm listening. Tell me more about that.",
+                "That sounds heavy. How long have you felt this way?",
+                "I'm here with you. Go on.",
+                "It takes courage to share that. How does that make you feel?",
+                "I see. Is there anything specifically triggering this?",
+                "You are safe here. Keep going."
+        };
+        return defaults[random.nextInt(defaults.length)];
     }
 
-    private boolean containsAny(String input, String[] keywords) {
-        for (String word : keywords) {
-            if (input.contains(word))
-                return true;
-        }
-        return false;
-    }
-
+    // --- UI HELPERS (Same as before) ---
     private void appendMessage(String sender, String text, boolean isUser) {
         SimpleAttributeSet keyWord = new SimpleAttributeSet();
         StyleConstants.setBold(keyWord, true);
