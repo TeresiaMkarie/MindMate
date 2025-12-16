@@ -18,7 +18,7 @@ public class App {
     // Chart specific colors
     private static final Color COL_CHART_GAP = Color.decode("#E0E0E0");
     private static final Color COL_CHART_URBAN = Color.decode("#7B1FA2");
-    private static final Color COL_CHART_RURAL = Color.decode("#FF9800");
+    private static final Color COL_CHART_RURAL = Color.decode("#ddcdb6ff");
 
     private JFrame frame;
     private String currentUser = null;
