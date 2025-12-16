@@ -39,7 +39,7 @@ public class Message {
         JTextArea text = new JTextArea();
         text.setEditable(false);
         text.setLineWrap(true);
-        text.setBackground(new Color(0x1e0f26));
+        text.setBackground(new Color(0x1E0F26));
         text.setForeground(new Color(0xe6d9fc));
         JScrollPane scrollPane = new JScrollPane(text);
 
@@ -118,6 +118,12 @@ public class Message {
             else if(msg.equals("how are you?")){
                 botReply = "I am doing well, thank you for askingi feel blessed.I am here, calm and ready to listen.\n How are you feeling right now?";
             }
+            else if(msg.equals("Will try to do that.")){
+                botReply = "That sounds a very strong step remember never give up if you slip.";
+            }
+            else if(msg.equals("Do you think i can make it in life")){
+                botReply = "Of Course you are a winner Surviving is always the key";                          
+            }
 
             else {
                 botReply = "I'm listening dear👂, Tell me more about how you're feeling;Life is all about communicating!!";
@@ -138,8 +144,6 @@ public class Message {
        frm.add(scrollPane, BorderLayout.CENTER);
        frm.add(panel, BorderLayout.SOUTH);
       frm.setVisible(true);
-
-
 
     }
     
