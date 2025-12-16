@@ -102,6 +102,7 @@ public class Message {
                 botReply = "I'm sorry you're feeling low 💙 "
                         + "Want to talk about what's making you feel this way?";
             }
+        
 
             else if (containsAny(msg, adviceWords)) {
                 botReply = "Of course  My advice: take things one step at a time. "
@@ -111,20 +112,20 @@ public class Message {
             else if (msg.equals("hi") || msg.equals("hello")) {
                 botReply = "Hello ,How are you feeling today?";
             }
-
+        
             else if (msg.equals("bye")) {
                 botReply = "Goodbye 👋 Remember, I'm always here if you need to talk.Glad i solved something 😊and feel welcomed to Talk to Flux-Whisper";
             }
             else if(msg.equals("how are you?")){
                 botReply = "I am doing well, thank you for askingi feel blessed.I am here, calm and ready to listen.\n How are you feeling right now?";
             }
-            else if(msg.equals("Will try to do that.")){
+            else if(msg.equals(" I Will try to do that.")){
                 botReply = "That sounds a very strong step remember never give up if you slip.";
             }
             else if(msg.equals("Do you think i can make it in life")){
                 botReply = "Of Course you are a winner Surviving is always the key";                          
             }
-
+        
             else {
                 botReply = "I'm listening dear👂, Tell me more about how you're feeling;Life is all about communicating!!";
             }
